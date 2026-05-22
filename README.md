@@ -10,6 +10,55 @@ The current contract version is **`0.0.6`** (`@custom:version` in [`src/Adapter8
 
 This project lets an external token control an ERC-8004 `IdentityRegistry` record while the adapter proxy remains the on-chain owner of the ERC-8004 identity token.
 
+## How It Works
+
+Registration flow:
+
+```text
+  ┌──────────────┐
+  │ Token holder │
+  └──────────────┘
+         │
+         │ register(standard, tokenContract, tokenId, agentURI)
+         ▼
+  ┌──────────────┐      register       ┌─────────────────────┐
+  │   Adapter    │ ──────────────────▶ │  ERC-8004 Registry  │
+  └──────────────┘                     └─────────────────────┘
+         ▲                                      │
+         │        mints agent NFT to adapter    │
+         └──────────────────────────────────────┘
+```
+
+The token holder proves control of an external token and calls `register` on the adapter. The adapter registers the identity in the ERC-8004 registry, which mints the agent NFT to the adapter. The adapter keeps owning the identity and records the binding back to the external token.
+
+Control transfer:
+
+```text
+  ┌─────────┐   transfer NFT #1   ┌─────────┐
+  │  Alice  │ ──────────────────▶ │   Bob   │
+  └─────────┘                     └─────────┘
+       │                               │
+       │            control            │
+       └───────────────┬───────────────┘
+                       ▼
+             ┌───────────────────┐
+             │      Adapter      │
+             │  owner check on   │
+             │      NFT #1       │
+             └───────────────────┘
+                       │
+                       │ forwards only for the current owner
+                       ▼
+             ┌───────────────────┐
+             │  ERC-8004 agent   │
+             │ (owned by adapter)│
+             └───────────────────┘
+```
+
+The ERC-8004 agent NFT never moves; it stays owned by the adapter. Either party can call the adapter, but the adapter checks the current owner of NFT #1 on every call and forwards only for whoever holds it now. So before the transfer Alice controls the agent, and the moment NFT #1 moves to Bob, Bob does, with no transaction on the agent itself.
+
+## Details
+
 The adapter writes canonical ERC-8004 binding metadata in the format proposed by ERC-8217, the agent-binding discovery draft. ERC-8217 is still a draft, open in Ethereum/ERCs PR [#1648](https://github.com/ethereum/ERCs/pull/1648) and not finalized, so the format may change. The reserved `agent-binding` key holds the 20-byte binding-contract address (this adapter proxy), and a verifier reads the full token coordinates from `bindingOf(agentId)`.
 
 The binding contract and the bound token contract can be different contracts or the same contract. This repo uses a separate adapter contract, but the metadata format and ERC flow also support token contracts that implement the binding interface themselves.
@@ -353,53 +402,6 @@ The adapter intentionally goes beyond the ERC draft by also exposing:
 - `unsetAgentWallet(...)`
 - `isController(...)`
 - the counterfactual register family
-
-## Diagrams
-
-Registration flow:
-
-```text
-  ┌──────────────┐
-  │ Token holder │
-  └──────────────┘
-         │
-         │ register(standard, tokenContract, tokenId, agentURI)
-         ▼
-  ┌──────────────┐      register       ┌─────────────────────┐
-  │   Adapter    │ ──────────────────▶ │  ERC-8004 Registry  │
-  └──────────────┘                     └─────────────────────┘
-         ▲                                      │
-         │        mints agent NFT to adapter    │
-         └──────────────────────────────────────┘
-```
-
-The token holder proves control of an external token and calls `register` on the adapter. The adapter registers the identity in the ERC-8004 registry, which mints the agent NFT to the adapter. The adapter keeps owning the identity and records the binding back to the external token.
-
-Control transfer:
-
-```text
-  ┌─────────┐   transfer NFT #1   ┌─────────┐
-  │  Alice  │ ──────────────────▶ │   Bob   │
-  └─────────┘                     └─────────┘
-       │                               │
-       │            control            │
-       └───────────────┬───────────────┘
-                       ▼
-             ┌───────────────────┐
-             │      Adapter      │
-             │  owner check on   │
-             │      NFT #1       │
-             └───────────────────┘
-                       │
-                       │ forwards only for the current owner
-                       ▼
-             ┌───────────────────┐
-             │  ERC-8004 agent   │
-             │ (owned by adapter)│
-             └───────────────────┘
-```
-
-The ERC-8004 agent NFT never moves; it stays owned by the adapter. Either party can call the adapter, but the adapter checks the current owner of NFT #1 on every call and forwards only for whoever holds it now. So before the transfer Alice controls the agent, and the moment NFT #1 moves to Bob, Bob does, with no transaction on the agent itself.
 
 ## Admin Model
 
