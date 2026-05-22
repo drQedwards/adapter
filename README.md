@@ -356,39 +356,16 @@ The adapter intentionally goes beyond the ERC draft by also exposing:
 
 ## Diagram
 
+Registration flow:
+
 ```mermaid
-flowchart TD
-    A["Admin"] -->|"deploys implementation + proxy"| P["Adapter Proxy"]
-    A -->|"can upgrade UUPS implementation"| P
-    A -->|"can change identityRegistry address"| P
-
-    U["User controlling external token"] -->|"register: standard, tokenContract, tokenId, agentURI, metadata"| P
-    U -->|"bindExisting: agentId, standard, tokenContract, tokenId"| P
-    T["Bound Token: ERC-721, ERC-1155, ERC-6909"] -->|"proves control"| P
-    D["delegate.xyz v2 registry"] -->|"hot-wallet delegation, ERC-721"| P
-    P -->|"register"| R["ERC-8004 IdentityRegistry"]
-    R -->|"mints ERC-8004 agent NFT to"| P
-    P -->|"stores agentId to bound token"| B[("binding storage")]
-    P -->|"setMetadata agent-binding, adapter address"| R
-    P -->|"unsetAgentWallet on register"| R
-
-    U -->|"setAgentURI, setMetadata, setMetadataBatch"| P
-    P -->|"forwards if caller controls bound token"| R
-
-    X["Verifier"] -->|"read agent-binding metadata"| R
-    X -->|"call bindingOf"| P
-    P -->|"returns canonical binding"| X
-
-    U -->|"setAgentWallet: agentId, newWallet, deadline, signature"| P
-    P -->|"forwards"| R
-    W["New Wallet"] -->|"EIP-712 or ERC-1271 proof"| R
-
-    U -->|"counterfactualRegister / counterfactualSet, emit-only"| P
-    P -->|"emits versioned events, no registry write"| I["Off-chain indexer"]
-
-    T -->|"transfer or balance change"| C["Controller changes automatically"]
-    C --> P
+flowchart LR
+    U["Token holder"] -->|"register"| A["Adapter"]
+    A -->|"register"| R["ERC-8004 Registry"]
+    R -->|"mints agent NFT to adapter"| A
 ```
+
+The token holder proves control of an external token and calls `register` on the adapter. The adapter registers the identity in the ERC-8004 registry, which mints the agent NFT to the adapter. The adapter then owns the identity and records the binding back to the external token.
 
 ## Admin Model
 
