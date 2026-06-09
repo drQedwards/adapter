@@ -193,7 +193,8 @@ Bridge contracts let external naming systems control ERC-8004 agents. A trusted 
 
 - Base: `0xC7AFf3b228b8353d1811802F90f389815431a194`
 
-Bridge owner and relayer (rotate via `setRelayer`): `0xd83113dCf145bF72F640DbD2141dCB9B14A53789`
+Bridge owner (multisig — rotates the relayer via `setRelayer`): `0x09cbc0d92aabe6f53ac7e84f0ba0fbfd05eb80f2`
+Bridge relayer (`syncOwnership` / `burn`): `0xd83113dCf145bF72F640DbD2141dCB9B14A53789`
 
 Deploy to additional chains: `forge script script/DeployBridges.s.sol --rpc-url $RPC_URL --broadcast`
 

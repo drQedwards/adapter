@@ -100,6 +100,10 @@ The deployer EOA (`DeployAdapterImplementation.s.sol`) deploys only the new impl
 
 `src/bridges/` contains ERC-721 mirror contracts that let external naming systems control ERC-8004 agents. The adapter requires no changes — it sees these as standard ERC-721 bindings.
 
+Both Base bridges share the same admin model:
+- **Owner** (multisig, rotates the relayer via `setRelayer`): `0x09cbc0d92aabe6f53ac7e84f0ba0fbfd05eb80f2`
+- **Relayer** (`syncOwnership` / `burn`): `0xd83113dCf145bF72F640DbD2141dCB9B14A53789`
+
 ### WrappedBNSv2 (`.btc` names on Stacks)
 
 Mirrors BNS v2 (SIP-009) ownership from the Stacks blockchain onto EVM. A trusted off-chain relayer watches Stacks for name transfers and calls `syncOwnership(canonicalName, evmOwner)`.
