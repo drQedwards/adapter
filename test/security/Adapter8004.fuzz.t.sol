@@ -120,8 +120,9 @@ contract FuzzAdapter8004Test is Test {
         if (bobBal > 0) token1155.mint(bob, tokenId, bobBal);
 
         vm.prank(alice);
-        uint256 agentId =
-            adapter.register(IERCAgentBindings.TokenStandard.ERC1155, address(token1155), tokenId, "", _emptyMetadata());
+        uint256 agentId = adapter.register(
+            IERCAgentBindings.TokenStandard.ERC1155, address(token1155), tokenId, "", _emptyMetadata()
+        );
 
         assertTrue(adapter.isController(agentId, alice));
         assertEq(adapter.isController(agentId, bob), bobBal > 0);
@@ -143,8 +144,9 @@ contract FuzzAdapter8004Test is Test {
         if (bobBal > 0) token6909.mint(bob, tokenId, bobBal);
 
         vm.prank(alice);
-        uint256 agentId =
-            adapter.register(IERCAgentBindings.TokenStandard.ERC6909, address(token6909), tokenId, "", _emptyMetadata());
+        uint256 agentId = adapter.register(
+            IERCAgentBindings.TokenStandard.ERC6909, address(token6909), tokenId, "", _emptyMetadata()
+        );
 
         assertTrue(adapter.isController(agentId, alice));
         assertEq(adapter.isController(agentId, bob), bobBal > 0);

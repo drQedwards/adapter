@@ -67,10 +67,7 @@ contract WrappedENS is ERC721, Ownable {
         _;
     }
 
-    constructor(address initialOwner, address initialRelayer)
-        ERC721("Wrapped ENS", "wENS")
-        Ownable(initialOwner)
-    {
+    constructor(address initialOwner, address initialRelayer) ERC721("Wrapped ENS", "wENS") Ownable(initialOwner) {
         relayer = initialRelayer;
         emit RelayerUpdated(address(0), initialRelayer);
     }

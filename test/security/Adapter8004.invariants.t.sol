@@ -60,9 +60,7 @@ contract SecurityAdapter8004InvariantsTest is Test {
     // Post-register, every externally-callable gated function must leave
     // bindingOf(agentId) byte-for-byte unchanged.
     // ---------------------------------------------------------------------
-    function testFuzzBindingImmutableAcrossAllWrites(address holder, uint256 tokenId, bytes calldata payload)
-        external
-    {
+    function testFuzzBindingImmutableAcrossAllWrites(address holder, uint256 tokenId, bytes calldata payload) external {
         holder = _sanitizeHolder(holder);
         token721.mint(holder, tokenId);
 
