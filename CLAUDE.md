@@ -96,6 +96,45 @@ The deployer EOA (`DeployAdapterImplementation.s.sol`) deploys only the new impl
 
 `setAgentWallet` passes through native ERC-8004 signature checks. The signed EIP-712 payload must use the **adapter proxy address** as the `owner` field (not the external token holder), because the adapter owns the ERC-8004 NFT.
 
+## Cross-chain name bridges
+
+`src/bridges/` contains ERC-721 mirror contracts that let external naming systems control ERC-8004 agents. The adapter requires no changes — it sees these as standard ERC-721 bindings.
+
+### WrappedBNSv2 (`.btc` names on Stacks)
+
+Mirrors BNS v2 (SIP-009) ownership from the Stacks blockchain onto EVM. A trusted off-chain relayer watches Stacks for name transfers and calls `syncOwnership(canonicalName, evmOwner)`.
+
+- **tokenId**: `uint256(keccak256(abi.encodePacked("alice.btc")))` — deterministic, consistent across all EVM chains
+- **EVM transfers blocked**: only the relayer can move ownership; `approve` and `setApprovalForAll` revert
+- **Expiry/burn**: relayer calls `burn(name)` when the name lapses; any controller-gated adapter call then reverts until the name is re-registered
+- **delegate.xyz** still works: the `.btc` holder can delegate a hot EVM wallet via delegate.xyz v2 without relayer involvement
+
+Registration once the relayer has synced:
+```solidity
+adapter.register(
+    TokenStandard.ERC721,
+    address(wrappedBNSv2),
+    wrappedBNSv2.nameToTokenId("alice.btc"),
+    agentURI
+);
+```
+
+### WrappedENS (`.eth` names on non-mainnet chains)
+
+Same pattern for ENS `.eth` names on chains other than Ethereum mainnet. On mainnet, ENS second-level names are already ERC-721 tokens (BaseRegistrar `0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85`) and bind directly with no wrapper needed:
+
+```solidity
+// mainnet only — no wrapper required
+adapter.register(
+    TokenStandard.ERC721,
+    0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85,
+    uint256(keccak256("alice")),   // ENS BaseRegistrar tokenId convention
+    agentURI
+);
+```
+
+For Base, Optimism, Sepolia, etc., deploy `WrappedENS` and point a relayer at it. `labelToTokenId(label)` matches the ENS BaseRegistrar's own `uint256(keccak256(label))` convention so tokenIds align with on-chain ENS data on mainnet.
+
 ## Test structure
 
 ```
