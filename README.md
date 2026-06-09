@@ -181,6 +181,22 @@ Admin (Safe v1.4.1 multisig, same address on all three chains):
 
 Previously held by EOA `0xF8e03bd4436371E0e2F7C02E529b2172fe72b4EF` until the 2026-05-15 transfer (see [`deployments/2026-05-15-ownership-transfer-to-safe-report.md`](./deployments/2026-05-15-ownership-transfer-to-safe-report.md)).
 
+### Cross-chain name bridges (Base)
+
+Bridge contracts let external naming systems control ERC-8004 agents. A trusted relayer mirrors ownership onto these ERC-721 contracts; the adapter binds to them via its standard ERC-721 path with no adapter changes required.
+
+**WrappedBNSv2** — mirrors BNS v2 (`.btc`) SIP-009 NFTs from the Stacks blockchain:
+
+- Base: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
+
+**WrappedENS** — mirrors ENS (`.eth`) names from Ethereum mainnet onto Base (on mainnet, bind directly to the ENS BaseRegistrar `0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85` instead):
+
+- Base: `0xC7AFf3b228b8353d1811802F90f389815431a194`
+
+Bridge owner and relayer (rotate via `setRelayer`): `0xd83113dCf145bF72F640DbD2141dCB9B14A53789`
+
+Deploy to additional chains: `forge script script/DeployBridges.s.sol --rpc-url $RPC_URL --broadcast`
+
 Users and integrators should interact with the proxy addresses, not the implementation addresses.
 
 Implementation upgrades are governed by the Safe multisig through UUPS. The [`deployments/`](./deployments) folder is the authoritative record of each upgrade and its prepared Safe transaction payloads, including the `0.0.6` implementation. Confirm the live implementation on a block explorer before relying on a specific version on a specific chain.

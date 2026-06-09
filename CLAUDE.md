@@ -119,6 +119,9 @@ adapter.register(
 );
 ```
 
+**Deployed addresses:**
+- Base: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
+
 ### WrappedENS (`.eth` names on non-mainnet chains)
 
 Same pattern for ENS `.eth` names on chains other than Ethereum mainnet. On mainnet, ENS second-level names are already ERC-721 tokens (BaseRegistrar `0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85`) and bind directly with no wrapper needed:
@@ -134,6 +137,9 @@ adapter.register(
 ```
 
 For Base, Optimism, Sepolia, etc., deploy `WrappedENS` and point a relayer at it. `labelToTokenId(label)` matches the ENS BaseRegistrar's own `uint256(keccak256(label))` convention so tokenIds align with on-chain ENS data on mainnet.
+
+**Deployed addresses:**
+- Base: `0xC7AFf3b228b8353d1811802F90f389815431a194`
 
 ## Test structure
 
