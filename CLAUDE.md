@@ -124,7 +124,10 @@ adapter.register(
 ```
 
 **Deployed addresses:**
+- Ethereum mainnet: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
 - Base: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
+
+(Same address on both chains — the deployer EOA shared a nonce at deploy time. On mainnet the contract was deployed with the multisig as `owner` from birth, so no post-deploy ownership transfer was needed.)
 
 ### WrappedENS (`.eth` names on non-mainnet chains)
 

@@ -181,15 +181,16 @@ Admin (Safe v1.4.1 multisig, same address on all three chains):
 
 Previously held by EOA `0xF8e03bd4436371E0e2F7C02E529b2172fe72b4EF` until the 2026-05-15 transfer (see [`deployments/2026-05-15-ownership-transfer-to-safe-report.md`](./deployments/2026-05-15-ownership-transfer-to-safe-report.md)).
 
-### Cross-chain name bridges (Base)
+### Cross-chain name bridges
 
 Bridge contracts let external naming systems control ERC-8004 agents. A trusted relayer mirrors ownership onto these ERC-721 contracts; the adapter binds to them via its standard ERC-721 path with no adapter changes required.
 
 **WrappedBNSv2** — mirrors BNS v2 (`.btc`) SIP-009 NFTs from the Stacks blockchain:
 
+- Ethereum mainnet: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
 - Base: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
 
-**WrappedENS** — mirrors ENS (`.eth`) names from Ethereum mainnet onto Base (on mainnet, bind directly to the ENS BaseRegistrar `0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85` instead):
+**WrappedENS** — mirrors ENS (`.eth`) names from Ethereum mainnet onto other chains. On mainnet itself there is no WrappedENS: `.eth` names are already ERC-721 tokens, so bind directly to the ENS BaseRegistrar `0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85` instead.
 
 - Base: `0xC7AFf3b228b8353d1811802F90f389815431a194`
 
