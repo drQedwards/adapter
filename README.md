@@ -189,10 +189,14 @@ Bridge contracts let external naming systems control ERC-8004 agents. A trusted 
 
 - Ethereum mainnet: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
 - Base: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
+- Arbitrum One: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
 
 **WrappedENS** — mirrors ENS (`.eth`) names from Ethereum mainnet onto other chains. On mainnet itself there is no WrappedENS: `.eth` names are already ERC-721 tokens, so bind directly to the ENS BaseRegistrar `0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85` instead.
 
 - Base: `0xC7AFf3b228b8353d1811802F90f389815431a194`
+- Arbitrum One: `0xC7AFf3b228b8353d1811802F90f389815431a194`
+
+All bridge deployments share the same address on every chain (the deployer EOA's nonce was aligned across chains). On Arbitrum the ERC-8004 registry exists but the adapter does not yet, so the bridges mirror names today and `register()` becomes available once an adapter proxy is deployed there.
 
 Bridge owner (multisig — rotates the relayer via `setRelayer`): `0x09cbc0d92aabe6f53ac7e84f0ba0fbfd05eb80f2`
 Bridge relayer (`syncOwnership` / `burn`): `0xd83113dCf145bF72F640DbD2141dCB9B14A53789`

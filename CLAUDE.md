@@ -126,8 +126,9 @@ adapter.register(
 **Deployed addresses:**
 - Ethereum mainnet: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
 - Base: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
+- Arbitrum One: `0xa98741B7EE20B096a6262A705A088f8c0563Dfa4`
 
-(Same address on both chains — the deployer EOA shared a nonce at deploy time. On mainnet the contract was deployed with the multisig as `owner` from birth, so no post-deploy ownership transfer was needed.)
+(Same address on all chains — the deployer EOA shared a nonce at deploy time. On mainnet and Arbitrum the contract was deployed with the multisig as `owner` from birth, so no post-deploy ownership transfer was needed.)
 
 ### WrappedENS (`.eth` names on non-mainnet chains)
 
@@ -147,6 +148,9 @@ For Base, Optimism, Sepolia, etc., deploy `WrappedENS` and point a relayer at it
 
 **Deployed addresses:**
 - Base: `0xC7AFf3b228b8353d1811802F90f389815431a194`
+- Arbitrum One: `0xC7AFf3b228b8353d1811802F90f389815431a194`
+
+On Arbitrum the ERC-8004 registry is present but the adapter is not yet deployed, so the bridges mirror names today; `register()` works there once an adapter proxy exists.
 
 ## Test structure
 
