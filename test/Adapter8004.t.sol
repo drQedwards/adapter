@@ -240,9 +240,8 @@ contract Adapter8004Test is Test {
     function testRewriteBindingMetadataRewritesLegacyPayloadToTwentyBytes() external {
         uint256 agentId = _register721(alice, 1);
         string memory key = adapter.BINDING_METADATA_KEY();
-        bytes memory legacy = _encodeLegacyBindingMetadata(
-            address(adapter), IERCAgentBindings.TokenStandard.ERC721, address(token721), 1
-        );
+        bytes memory legacy =
+            _encodeLegacyBindingMetadata(address(adapter), IERCAgentBindings.TokenStandard.ERC721, address(token721), 1);
         assertGt(legacy.length, 20);
 
         vm.prank(address(adapter));
@@ -260,7 +259,8 @@ contract Adapter8004Test is Test {
     function testRegisterRejectsReservedBindingMetadataKey() external {
         IERC8004IdentityRegistry.MetadataEntry[] memory metadata = new IERC8004IdentityRegistry.MetadataEntry[](1);
         metadata[0] = IERC8004IdentityRegistry.MetadataEntry({
-            metadataKey: adapter.BINDING_METADATA_KEY(), metadataValue: bytes("bad")
+            metadataKey: adapter.BINDING_METADATA_KEY(),
+            metadataValue: bytes("bad")
         });
 
         vm.expectRevert(
@@ -284,7 +284,8 @@ contract Adapter8004Test is Test {
 
         IERC8004IdentityRegistry.MetadataEntry[] memory metadata = new IERC8004IdentityRegistry.MetadataEntry[](1);
         metadata[0] = IERC8004IdentityRegistry.MetadataEntry({
-            metadataKey: adapter.BINDING_METADATA_KEY(), metadataValue: bytes("bad")
+            metadataKey: adapter.BINDING_METADATA_KEY(),
+            metadataValue: bytes("bad")
         });
 
         vm.expectRevert(
@@ -511,7 +512,8 @@ contract Adapter8004Test is Test {
     function testCounterfactualRegisterRejectsReservedBindingMetadataKey() external {
         IERC8004IdentityRegistry.MetadataEntry[] memory metadata = new IERC8004IdentityRegistry.MetadataEntry[](1);
         metadata[0] = IERC8004IdentityRegistry.MetadataEntry({
-            metadataKey: adapter.BINDING_METADATA_KEY(), metadataValue: bytes("bad")
+            metadataKey: adapter.BINDING_METADATA_KEY(),
+            metadataValue: bytes("bad")
         });
 
         vm.expectRevert(
@@ -526,7 +528,8 @@ contract Adapter8004Test is Test {
     function testCounterfactualRegisterRejectsCfRegistrationKey() external {
         IERC8004IdentityRegistry.MetadataEntry[] memory metadata = new IERC8004IdentityRegistry.MetadataEntry[](1);
         metadata[0] = IERC8004IdentityRegistry.MetadataEntry({
-            metadataKey: adapter.CF_REGISTRATION_KEY(), metadataValue: bytes("bad")
+            metadataKey: adapter.CF_REGISTRATION_KEY(),
+            metadataValue: bytes("bad")
         });
 
         vm.expectRevert(abi.encodeWithSelector(Adapter8004.ReservedMetadataKey.selector, adapter.CF_REGISTRATION_KEY()));
@@ -651,7 +654,8 @@ contract Adapter8004Test is Test {
     function testCounterfactualSetMetadataBatchRejectsReservedBindingMetadataKey() external {
         IERC8004IdentityRegistry.MetadataEntry[] memory metadata = new IERC8004IdentityRegistry.MetadataEntry[](1);
         metadata[0] = IERC8004IdentityRegistry.MetadataEntry({
-            metadataKey: adapter.BINDING_METADATA_KEY(), metadataValue: bytes("bad")
+            metadataKey: adapter.BINDING_METADATA_KEY(),
+            metadataValue: bytes("bad")
         });
 
         vm.expectRevert(
@@ -664,7 +668,8 @@ contract Adapter8004Test is Test {
     function testCounterfactualSetMetadataBatchRejectsCfRegistrationKey() external {
         IERC8004IdentityRegistry.MetadataEntry[] memory metadata = new IERC8004IdentityRegistry.MetadataEntry[](1);
         metadata[0] = IERC8004IdentityRegistry.MetadataEntry({
-            metadataKey: adapter.CF_REGISTRATION_KEY(), metadataValue: bytes("bad")
+            metadataKey: adapter.CF_REGISTRATION_KEY(),
+            metadataValue: bytes("bad")
         });
 
         vm.expectRevert(abi.encodeWithSelector(Adapter8004.ReservedMetadataKey.selector, adapter.CF_REGISTRATION_KEY()));
@@ -1252,10 +1257,9 @@ contract Adapter8004Test is Test {
         uint256 tokenId
     ) internal pure returns (bytes memory) {
         bytes memory compactTokenId = _encodeCompactUint(tokenId);
-        return
-            abi.encodePacked(
-                bindingContract, uint8(standard), tokenContract, uint8(compactTokenId.length), compactTokenId
-            );
+        return abi.encodePacked(
+            bindingContract, uint8(standard), tokenContract, uint8(compactTokenId.length), compactTokenId
+        );
     }
 
     function _encodeCompactUint(uint256 value) internal pure returns (bytes memory out) {

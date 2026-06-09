@@ -143,9 +143,8 @@ contract Adapter8004 is
         nonReentrant
         returns (uint256 agentId)
     {
-        return _registerImpl(
-            standard, tokenContract, tokenId, agentURI, new IERC8004IdentityRegistry.MetadataEntry[](0)
-        );
+        return
+            _registerImpl(standard, tokenContract, tokenId, agentURI, new IERC8004IdentityRegistry.MetadataEntry[](0));
     }
 
     function bindExisting(uint256 agentId, TokenStandard standard, address tokenContract, uint256 tokenId)
@@ -260,7 +259,10 @@ contract Adapter8004 is
         emit AgentURISet(agentId, newURI, msg.sender);
     }
 
-    function setMetadata(uint256 agentId, string memory metadataKey, bytes memory metadataValue) external nonReentrant {
+    function setMetadata(uint256 agentId, string memory metadataKey, bytes memory metadataValue)
+        external
+        nonReentrant
+    {
         // 1. Confirm the caller currently controls the bound token.
         _requireController(agentId, msg.sender);
 
@@ -690,8 +692,9 @@ contract Adapter8004 is
         }
 
         // 2. Accept either a `DELEGATE_RIGHTS`-scoped delegation or an empty/full delegation.
-        return IDelegateRegistry(DELEGATE_REGISTRY)
-            .checkDelegateForERC721(account, owner, tokenContract, tokenId, DELEGATE_RIGHTS);
+        return IDelegateRegistry(DELEGATE_REGISTRY).checkDelegateForERC721(
+            account, owner, tokenContract, tokenId, DELEGATE_RIGHTS
+        );
     }
 
     /// @dev NAME HAZARD: `_requireNotReservedBindingKey` (this one) vs `_requireNoReservedBindingKey`
