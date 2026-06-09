@@ -12,14 +12,22 @@ import {WrappedENS} from "../src/bridges/WrappedENS.sol";
 ///   DEPLOYER_PRIVATE_KEY  — deployer EOA; becomes the contract owner (can rotate relayer)
 ///   BRIDGE_RELAYER        — address authorised to call syncOwnership and burn
 ///
-/// Optional (omit to skip that contract):
-///   DEPLOY_BNS_BRIDGE=true
-///   DEPLOY_ENS_BRIDGE=true
+/// Optional (both default to true; set to "false" to skip that contract):
+///   DEPLOY_BNS_BRIDGE=false   # skip WrappedBNSv2
+///   DEPLOY_ENS_BRIDGE=false   # skip WrappedENS
+///
+/// WrappedENS must never be deployed on Ethereum mainnet (chainid 1): `.eth` names are
+/// already ERC-721 tokens on the ENS BaseRegistrar, so agents bind to it directly. This
+/// script hard-reverts a mainnet WrappedENS deployment to enforce that invariant in code,
+/// regardless of the flag default.
 ///
 /// Usage:
 ///   forge script script/DeployBridges.s.sol --rpc-url $RPC_URL --broadcast
 ///   forge script script/DeployBridges.s.sol --rpc-url $BASE_RPC_URL --broadcast
 contract DeployBridgesScript is Script {
+    /// @dev Thrown if a WrappedENS deployment is attempted on Ethereum mainnet.
+    error WrappedENSNotAllowedOnMainnet();
+
     function run() external returns (address bnsv2, address ens) {
         uint256 deployerKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
         address deployer = vm.addr(deployerKey);
@@ -27,6 +35,11 @@ contract DeployBridgesScript is Script {
 
         bool deployBNS = _envBoolOr("DEPLOY_BNS_BRIDGE", true);
         bool deployENS = _envBoolOr("DEPLOY_ENS_BRIDGE", true);
+
+        // Enforce the documented invariant in code: no WrappedENS on mainnet, even if the
+        // operator leaves DEPLOY_ENS_BRIDGE at its default. Bind directly to the ENS
+        // BaseRegistrar (0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85) on mainnet instead.
+        if (deployENS && block.chainid == 1) revert WrappedENSNotAllowedOnMainnet();
 
         vm.startBroadcast(deployerKey);
 
