@@ -17,17 +17,18 @@ Local validation before the live runs: `forge build` clean, `forge test` = 235 p
 | 8004 NFT custody | held by adapter `0x270d25…` (cannot be extracted) |
 | `setAgentURI` | tx `0xe6a4f6fd232295291de29cb9030a2d8d09fda40adc17e3ffb02e85c528591363` |
 
-## Ethereum mainnet — partial (sync done, register deferred) ⚠️
+## Ethereum mainnet — full lifecycle ✅
 
 | Step | Result |
 |---|---|
 | `syncOwnership` (mint) | tx `0xae5f9174c52aa129a948d12edc173364afce66dae67a6cd8be039fcf37da4dc5` (97,202 gas) |
 | `ownerOf` after sync | `0xd83113…3789` ✓ |
 | EVM transfer blocked | `transferFrom` reverts `0xe406f414` ✓ |
-| `register` | **deferred** — register est. 229,013 gas; mid-run gas rose to ~0.72 gwei, leaving near-zero balance margin. Not safe to submit (EIP-1559 `gasLimit × maxFeePerGas` balance check would require ~2× the actual cost). |
+| `register` agent | tx `0xfd878df95480ba1cfee90265e309cf30941425d868000489cb226db9dc639a07` (245,448 gas), **agentId 34347** |
+| Control resolution | `isController(owner)=true`, `isController(stranger)=false` ✓ |
+| 8004 NFT custody | held by adapter `0xde152AfB7…` (cannot be extracted) ✓ |
 
-To complete the mainnet register: top up the relayer with ~0.0003 ETH on mainnet,
-then run `register` + `setAgentURI`. The name is already mirrored on mainnet.
+Note: register was deferred on 2026-06-09 due to gas spike (0.72 gwei). Completed 2026-06-10 at 0.12 gwei after relayer top-up from `0xf24bd41f1a53aa8c2498026e507da6906bc54ba3`.
 
 ## Arbitrum One — bridge mirror only ✅ (register unavailable)
 
